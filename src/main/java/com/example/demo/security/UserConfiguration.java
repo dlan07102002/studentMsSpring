@@ -1,24 +1,26 @@
 package com.example.demo.security;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class UserConfiguration {
 
     @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        UserDetails user1 = User.withUsername("ducklan").password("{noop}123456").roles("teacher").build();
-        UserDetails user2 = User.withUsername("ngnhi").password("{noop}123456").roles("manager").build();
-        UserDetails user3 = User.withUsername("thdat").password("{noop}123456").roles("admin").build();
-        return new InMemoryUserDetailsManager(user1, user2, user3);
+    @Autowired
+    public JdbcUserDetailsManager jdbcUserDetailsManager(DataSource dataSource) {
+        JdbcUserDetailsManager userDetailsManager = new JdbcUserDetailsManager();
+        userDetailsManager.setDataSource(dataSource);
+        return userDetailsManager;
     }
 
     @Bean
@@ -27,12 +29,12 @@ public class UserConfiguration {
             http.authorizeHttpRequests(
                     // ** represents any parameter the pass in
                     configure -> configure
-                            .requestMatchers(HttpMethod.GET, "students").hasAnyRole("teacher", "manager", "admin")
+                            .requestMatchers(HttpMethod.GET, "students").hasAnyRole("TEACHER", "MANAGER", "ADMIN")
                             .requestMatchers(HttpMethod.GET, "students/**")
-                            .hasAnyRole("teacher", "manager", "admin")
-                            .requestMatchers(HttpMethod.POST, "students").hasAnyRole("manager", "admin")
-                            .requestMatchers(HttpMethod.PUT, "students").hasAnyRole("manager", "admin")
-                            .requestMatchers(HttpMethod.DELETE, "students/**").hasAnyRole("admin"));
+                            .hasAnyRole("TEACHER", "MANAGER", "ADMIN")
+                            .requestMatchers(HttpMethod.POST, "students").hasAnyRole("MANAGER", "ADMIN")
+                            .requestMatchers(HttpMethod.PUT, "students").hasAnyRole("MANAGER", "ADMIN")
+                            .requestMatchers(HttpMethod.DELETE, "students/**").hasAnyRole("ADMIN"));
             http.httpBasic(Customizer.withDefaults());
             // Cross site request forgery
             http.csrf(csrf -> csrf.disable());
