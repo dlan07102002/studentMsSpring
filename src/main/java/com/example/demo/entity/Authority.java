@@ -11,7 +11,7 @@ public class Authority implements Serializable {
     @OneToOne
     @JoinColumn(name = "username", nullable = false, foreignKey = @ForeignKey(name = "fk_username") // Đặt tên cho
                                                                                                     // constraint khóa
-                                                                                                    // ngoại
+                                                                                                    // // ngoại
     )
     private User user; // Liên kết đến thực thể User (người dùng)
 

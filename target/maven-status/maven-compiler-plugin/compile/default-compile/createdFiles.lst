@@ -1,0 +1,11 @@
+com\example\demo\dao\StudentRepository.class
+com\example\demo\DemoApplication.class
+com\example\demo\service\StudentService.class
+com\example\demo\entity\User.class
+com\example\demo\rest\StudentController.class
+com\example\demo\security\UserConfiguration.class
+com\example\demo\entity\Student.class
+com\example\demo\service\StudentServiceImpl.class
+com\example\demo\entity\Authority.class
+com\example\demo\handler\MyHandler.class
+com\example\demo\handler\ErrorResponse.class
