@@ -21,7 +21,7 @@ public class StudentController {
     private StudentService studentService;
 
     @Autowired
-    public StudentController(StudentService studentService) {
+    public void setStudentService(StudentService studentService) {
         this.studentService = studentService;
     }
 
@@ -29,19 +29,33 @@ public class StudentController {
     public String showStudents(Model model) {
         List<Student> students = studentService.getAllStudents();
         model.addAttribute("students", students);
-        return "student/students";
+        return "students/students";
     }
 
     @GetMapping("/create")
     public String toStudentFormView(Model model) {
         Student student = new Student();
         model.addAttribute("student", student);
+        return "/students/students-form";
+    }
+
+    @PostMapping("/save")
+    public String createStudent(@ModelAttribute("student") Student student) {
+        studentService.updateStudent(student);
+
+        return "redirect:/students/list";
+    }
+
+    @GetMapping("/update")
+    public String toStudentFormView(@RequestParam("id") Integer id, Model model) {
+        Student student = studentService.getStudentById(id);
+        model.addAttribute("student", student);
         return "/student/students-form";
     }
 
-    @PostMapping("/created")
-    public String createStudent(@ModelAttribute("student") Student student) {
-        studentService.addStudent(student);
+    @GetMapping("/delete")
+    public String deleteStudent(@RequestParam("id") Integer id) {
+        studentService.deleteStudentById(id);
 
         return "redirect:/students/list";
     }
